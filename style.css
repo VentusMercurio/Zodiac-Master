@@ -278,6 +278,39 @@ body {
     min-height: 40px; width: 80%; max-width: 700px; /* Adjusted max-width */
     text-align: center; color: #ccc; font-style: italic; line-height: 1.4;
 }
+
+/* ... (Keep all existing CSS, including .stat-popup, animations, etc.) ... */
+
+/* Zodiac Symbol Display on Cards */
+.card-on-board .zodiac-board-symbol {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    font-size: 1.3em; /* Prominent symbol */
+    color: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
+    opacity: 0.7;
+    pointer-events: none;
+    line-height: 1;
+}
+
+.card-in-hand .name .zodiac-hand-symbol {
+    font-size: 0.9em; /* Slightly smaller than name text */
+    color: #ccc;
+    margin-left: 5px;
+}
+
+/* Adjustments to make space for board symbol if name is long */
+.card-on-board .name {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    max-width: 80%; /* Reduce max-width slightly to avoid overlap with symbol */
+    white-space: normal;
+    line-height: 1.15;
+    max-height: 2.3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 15px; /* Push name away from right edge where symbol is */
+}
 /* Status message specific battle outcomes */
 #status-area .battle-win { color: #76ff03; font-weight: bold; }
 #status-area .battle-lose { color: #ff6b6b; font-weight: bold; }
