@@ -1,0 +1,284 @@
+body {
+    font-family: sans-serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+#splash-screen, #duel-button, #play-again-button, #game-screen, #main-game-layout,
+#ai-hand-column, #player-hand-column, #board-column, .hand-area, #game-board,
+.grid-cell, .hand, .card, #status-area { /* Resetting some defaults if needed */
+    /* Ensure no weird inherited styles interfere with precise layout */
+}
+
+
+#splash-screen h1 { color: #ffcc66; }
+#duel-button:hover, #play-again-button:hover { background-color: #45a049; }
+
+#game-screen {
+    width: 100%;
+    max-width: 1500px; /* Increased for very large board */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#main-game-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 20px; /* Moderate gap */
+    margin-bottom: 20px;
+}
+
+#ai-hand-column, #player-hand-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: 160px; /* Even narrower for more board focus */
+    max-width: 160px;
+}
+#board-column {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1; /* Let this column take available central space */
+}
+#ai-hand-column { order: 1; }
+#player-hand-column { order: 3; }
+
+.hand-area {
+    background-color: #2a2a2a;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    min-height: 620px; /* Increased slightly for potentially taller but fewer cards in view */
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+.hand-area h3 { margin-top: 0; margin-bottom: 10px; text-align: center; flex-shrink: 0; font-size: 1em; }
+#ai-hand-column { background-color: #2a2a4a; border: 2px solid #66ccff; }
+#ai-hand-column h3 { color: #66ccff; }
+#player-hand-column { background-color: #4a2a2a; border: 2px solid #ff8a80; }
+#player-hand-column h3 { color: #ff8a80; }
+
+#game-board {
+    display: grid;
+    /* Board cells: 130px wide, 150px high for 4x4. Gives more space */
+    grid-template-columns: repeat(4, 130px);
+    grid-template-rows: repeat(4, 150px);
+    gap: 6px; /* Slightly larger gap */
+    border: 3px solid #999; /* Thicker, more prominent border */
+    background-color: #202020; /* Very dark board background */
+    padding: 12px; /* More padding around grid */
+    border-radius: 5px; /* Rounded corners for the board itself */
+    /* Width: (4*130)+(3*6)+(2*12)+(2*3) = 520+18+24+6 = 568px */
+    /* Height: (4*150)+(3*6)+(2*12)+(2*3) = 600+18+24+6 = 648px */
+}
+.grid-cell {
+    background-color: #333;
+    border: 1px solid #4c4c4c;
+    display: flex; justify-content: center; align-items: center;
+    color: #888; position: relative; border-radius: 4px;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out; /* Smooth transitions */
+}
+.grid-cell.drag-over { background-color: #4a4a4a; border-color: #666; }
+
+.hand { display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: center; flex-grow: 1; }
+
+.hand .card {
+    border: 1px solid #555; border-radius: 4px; padding: 5px;
+    background-color: #2c2c2c; font-size: 0.75em; /* Smaller cards again */
+    cursor: grab; box-sizing: border-box; position: relative;
+    width: 100px; height: 140px; /* Smaller hand cards to fit narrower columns */
+    display: flex; flex-direction: column; justify-content: flex-start;
+}
+.card.dragging { opacity: 0.5; border-style: dashed; cursor: grabbing; }
+.card.disabled { cursor: not-allowed; opacity: 0.6; }
+
+.hand .card .name { font-weight: bold; margin-bottom: 3px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95em; text-align: center; flex-shrink: 0; padding-top: 2px; }
+.hand .card .stats { font-size: 0.8em; color: #bbb; margin-bottom: 4px; text-align: center; flex-shrink: 0; line-height: 1.15; }
+.hand .card .stats span { display: block; margin-bottom: 0px; }
+.card .stats .atk { color: #ff7870; } .card .stats .pdef { color: #70c8ff; }
+.card .stats .mdef { color: #c0ff80; } .card .stats .elem { color: #faf07d; }
+
+.arrow-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.arrow { position: absolute; font-weight: bold; user-select: none; text-shadow: 0 0 3px #000; } /* Stronger shadow */
+
+/* Arrows on Board Cards - for 130x150 cells */
+.card-on-board .arrow-container .arrow { font-size: 18px; } /* Larger arrows */
+.card-on-board .arrow-n  { top: 1px;  left: 50%; transform: translateX(-50%); }
+.card-on-board .arrow-ne { top: 3px;   right: 3px; }
+.card-on-board .arrow-e  { top: 50%; right: 1px;  transform: translateY(-50%); }
+.card-on-board .arrow-se { bottom: 3px; right: 3px; }
+.card-on-board .arrow-s  { bottom: 1px; left: 50%; transform: translateX(-50%); }
+.card-on-board .arrow-sw { bottom: 3px; left: 3px;  }
+.card-on-board .arrow-w  { top: 50%; left: 1px;   transform: translateY(-50%); }
+.card-on-board .arrow-nw { top: 3px;   left: 3px;  }
+
+/* Arrows on Hand Cards - for 100x140 cards */
+.card-in-hand .arrow-container .arrow { font-size: 11px; }
+.card-in-hand .arrow-n  { top: 2px;   left: 50%; transform: translateX(-50%); }
+.card-in-hand .arrow-ne { top: 2px;   right: 2px; }
+.card-in-hand .arrow-e  { top: 50%; right: 2px;   transform: translateY(-50%); }
+.card-in-hand .arrow-se { bottom: 2px; right: 2px; }
+.card-in-hand .arrow-s  { bottom: 2px; left: 50%; transform: translateX(-50%); }
+.card-in-hand .arrow-sw { bottom: 2px; left: 2px;  }
+.card-in-hand .arrow-w  { top: 50%; left: 2px;    transform: translateY(-50%); }
+.card-in-hand .arrow-nw { top: 2px;   left: 2px;  }
+
+.card.card-on-board {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 6px; font-size: 0.9em;
+    overflow: hidden; text-align: center; cursor: default;
+    border-radius: 3px;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; /* For highlights */
+}
+.card-on-board .name { font-size: 0.9em; margin-bottom: 5px; max-width: 95%; white-space: normal; line-height: 1.15; max-height: 2.3em; overflow: hidden; text-overflow: ellipsis; }
+.card-on-board .stats-condensed { font-size: 1em; font-weight: bold; letter-spacing: 0.5px; }
+
+/* Clash Highlight Styles */
+.card-on-board.clash-attacker, .card-on-board.clash-defender {
+    /* box-shadow: 0 0 12px 3px #ffd700; Gold-ish highlight */
+    outline: 3px solid #ffd700; /* Gold outline */
+    outline-offset: -1px;
+    transform: scale(1.03);
+    z-index: 10; /* Bring to front */
+}
+.card-on-board.clash-winner {
+    /* box-shadow: 0 0 15px 4px #76ff03; /* Bright Green */
+    outline-color: #76ff03 !important; /* Override generic clash highlight */
+}
+.card-on-board.clash-loser {
+    /* box-shadow: 0 0 15px 4px #ff1744; /* Bright Red */
+    outline-color: #ff1744 !important; /* Override generic clash highlight */
+    opacity: 0.8;
+}
+
+
+.card-on-board.player-card-visual { border: 2px solid #4CAF50; background-color: #2e442f; }
+.card-on-board.ai-card-visual { border: 2px solid #f44336; background-color: #4e2a2a; }
+/* Override border for highlighted cards if needed, or let outline dominate */
+.card-on-board.player-card-visual.clash-attacker, .card-on-board.player-card-visual.clash-defender { border-color: #4CAF50; }
+.card-on-board.ai-card-visual.clash-attacker, .card-on-board.ai-card-visual.clash-defender { border-color: #f44336; }
+
+
+.card-on-board.player-card-visual .arrow { color: #a5d6a7; }
+.card-on-board.ai-card-visual .arrow { color: #ef9a9a; }
+.card-in-hand.player-card-visual .arrow { color: #ff8a80; }
+.card-in-hand.ai-card-visual .arrow { color: #66ccff; }
+
+.hidden { display: none; }
+
+/* ... (keep all existing CSS from the previous version) ... */
+
+/* NEW: Stat Pop-up Styles */
+.stat-popup {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em; /* Adjust as needed */
+    font-weight: bold;
+    z-index: 20; /* Above cards */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    pointer-events: none; /* So they don't interfere with anything */
+    white-space: nowrap;
+}
+
+.stat-popup.visible {
+    opacity: 1;
+}
+
+.stat-popup-attacker {
+    bottom: 105%; /* Position above the card in the cell */
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px); /* Initial position for animation */
+}
+.stat-popup-attacker.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.stat-popup-defender {
+    top: 105%; /* Position below the card in the cell */
+    left: 50%;
+    transform: translateX(-50%) translateY(5px); /* Initial position for animation */
+}
+.stat-popup-defender.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+
+/* NEW: Hit Spark / Block Shield Effect Styles */
+/* These are very basic. You can get much fancier with keyframe animations */
+.card-on-board.hit-spark {
+    animation: hitSparkEffect 0.5s ease-out forwards;
+}
+
+.card-on-board.block-shield {
+    animation: blockShieldEffect 0.5s ease-out forwards;
+}
+
+@keyframes hitSparkEffect {
+    0% { box-shadow: 0 0 0px 0px rgba(255, 235, 59, 0); /* Yellow spark */ } /* Start transparent */
+    50% { box-shadow: 0 0 15px 5px rgba(255, 235, 59, 0.8); transform: scale(1.02); } /* Spark bright */
+    100% { box-shadow: 0 0 0px 0px rgba(255, 235, 59, 0); transform: scale(1); } /* Fade out */
+}
+
+@keyframes blockShieldEffect {
+    0% { box-shadow: 0 0 0px 0px rgba(30, 136, 229, 0); } /* Blue shield */ /* Start transparent */
+    50% { box-shadow: 0 0 15px 5px rgba(30, 136, 229, 0.7); opacity: 0.7; } /* Shield visible */
+    100% { box-shadow: 0 0 0px 0px rgba(30, 136, 229, 0); opacity: 1; } /* Fade out, restore opacity */
+}
+
+/* Ensure clash highlights don't get immediately overridden by spark/shield removing box-shadow */
+.card-on-board.clash-attacker, .card-on-board.clash-defender {
+    /* outline is good as it doesn't conflict with box-shadow */
+    outline: 3px solid #ffd700;
+    outline-offset: -1px;
+    transform: scale(1.03);
+    z-index: 10;
+}
+.card-on-board.clash-winner {
+    outline-color: #76ff03 !important;
+}
+.card-on-board.clash-loser {
+    outline-color: #ff1744 !important;
+    /* opacity: 0.8; -- Let blockShield animation handle opacity if it's a loser that blocked */
+}
+
+/* Re-add opacity for loser if not also blocking, or adjust logic */
+.card-on-board.clash-loser:not(.block-shield) {
+    opacity: 0.8;
+}
+
+
+/* ... (rest of your existing CSS) ... */
+
+#status-area {
+    margin-top: 15px; padding: 10px;
+    background-color: #2a2a2a; border-radius: 5px;
+    min-height: 40px; width: 80%; max-width: 700px; /* Adjusted max-width */
+    text-align: center; color: #ccc; font-style: italic; line-height: 1.4;
+}
+/* Status message specific battle outcomes */
+#status-area .battle-win { color: #76ff03; font-weight: bold; }
+#status-area .battle-lose { color: #ff6b6b; font-weight: bold; }
+#status-area .battle-flank { color: #ffc107; font-weight: bold; }

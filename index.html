@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zodiac Master - Prototype</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="splash-screen">
+        <h1>Zodiac Master</h1>
+        <p>Initial Prototype</p>
+        <button id="duel-button">Duel</button>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <div id="main-game-layout">
+            <div class="hand-area" id="ai-hand-column">
+                <h3>AI Hand</h3>
+                <div id="ai-hand" class="hand">
+                    <!-- AI cards -->
+                </div>
+            </div>
+
+            <div id="board-column">
+                <h2>Game Board</h2>
+                <div id="game-board">
+                    <!-- Grid -->
+                </div>
+            </div>
+
+            <div class="hand-area" id="player-hand-column">
+                <h3>Player Hand</h3>
+                <div id="player-hand" class="hand">
+                    <!-- Player cards -->
+                </div>
+            </div>
+        </div>
+
+         <div id="status-area">
+             <!-- Status messages -->
+         </div>
+         <button id="play-again-button" class="hidden">Play Again</button>
+
+         <!-- NEW: Duel Log Area -->
+         <div id="duel-log-container">
+            <h4>Duel Log</h4>
+            <div id="duel-log">
+                <!-- Log messages will be appended here by JavaScript -->
+            </div>
+         </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
