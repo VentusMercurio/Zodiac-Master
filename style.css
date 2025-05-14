@@ -183,7 +183,8 @@ body {
 .card-in-hand.player-card-visual .arrow { color: #ff8a80; }
 .card-in-hand.ai-card-visual .arrow { color: #66ccff; }
 
-.hidden { display: none; }
+.hidden {
+ display: none !important; }
 
 /* ... (keep all existing CSS from the previous version) ... */
 

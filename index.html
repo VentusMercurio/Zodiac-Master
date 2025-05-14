@@ -7,12 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- The ONE AND ONLY Splash Screen -->
     <div id="splash-screen">
         <h1>Zodiac Master</h1>
         <p>Initial Prototype</p>
         <button id="duel-button">Duel</button>
     </div>
 
+    <!-- The ONE AND ONLY Game Screen -->
     <div id="game-screen" class="hidden">
         <div id="main-game-layout">
             <div class="hand-area" id="ai-hand-column">
@@ -42,7 +44,6 @@
          </div>
          <button id="play-again-button" class="hidden">Play Again</button>
 
-         <!-- NEW: Duel Log Area -->
          <div id="duel-log-container">
             <h4>Duel Log</h4>
             <div id="duel-log">
@@ -51,6 +52,15 @@
          </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Script tags should be at the end of the body, before the closing </body> tag -->
+    <script src="config.js"></script>
+    <script src="state.js"></script>
+    <script src="domElements.js"></script>
+    <script src="utils.js"></script>
+    <script src="cardLogic.js"></script>
+    <script src="render.js"></script>
+    <script src="dragDrop.js"></script>
+    <script src="gameLogic.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
